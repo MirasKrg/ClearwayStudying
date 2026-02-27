@@ -7,6 +7,7 @@ import CellsPage from './pages/CellsPage';
 import HackathonDetailPage from './pages/HackathonDetailPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import ClearwayAIPage from './pages/ClearwayAIPage';
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -82,6 +83,8 @@ const App: React.FC = () => {
       case '/profile':
         if (!currentUser) return <LoginPage onLogin={handleLogin} />;
         return <ProfilePage username={currentUser} onLogout={handleLogout} />;
+      case '/clearway-ai':
+        return <ClearwayAIPage />;
       case '/login':
         if (currentUser) {
           navigate('/profile');
@@ -95,7 +98,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans relative">
+    <div className="min-h-screen font-sans relative flex flex-col">
       <AnimatedBackground isDarkMode={isDarkMode} />
       <Header 
         isDarkMode={isDarkMode} 
@@ -104,10 +107,10 @@ const App: React.FC = () => {
         currentUser={currentUser} 
         onLogout={handleLogout} 
       />
-      <main className="relative z-10 pt-20"> 
+      <main className="relative z-10 flex-grow pt-16"> 
         {renderPage()}
       </main>
-      <Footer />
+      {!['/cells', '/clearway-ai'].includes(currentPath) && <Footer />}
     </div>
   );
 };

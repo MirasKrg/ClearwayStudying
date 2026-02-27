@@ -145,7 +145,7 @@ const CellsPage: React.FC<{ navigate: (path: string) => void }> = ({ navigate })
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-28">
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold tracking-tight text-brand-text-light dark:text-brand-text-dark sm:text-5xl drop-shadow-lg">
           Найдите свою клетку

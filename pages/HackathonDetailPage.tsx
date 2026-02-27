@@ -1,7 +1,8 @@
-import React from 'react';
-import { BackIcon } from '../components/icons/Icons';
+import React, { useState, useEffect } from 'react';
+import { BackIcon, ChatIcon } from '../components/icons/Icons';
+import ChatWindow from '../components/ChatWindow';
 
-// Temporary data, will be fetched based on ID later
+// Временные данные, в будущем будут загружаться по ID
 const hackathonData = {
   id: 'local-impact-2026',
   title: 'Local Impact Hackathon 2026',
@@ -29,28 +30,28 @@ const hackathonData = {
 
 type Hackathon = typeof hackathonData;
 
-const HackathonDetailCard: React.FC<{ hackathon: Hackathon }> = ({ hackathon }) => (
-  <div className="bg-brand-surface-light/80 dark:bg-brand-surface-dark/70 backdrop-blur-md rounded-xl shadow-lg p-8 animate-fade-in-up">
+const HackathonDetailCard: React.FC<{ hackathon: Hackathon; onMouseUp: () => void; }> = ({ hackathon, onMouseUp }) => (
+  <div onMouseUp={onMouseUp} className="bg-brand-surface-light/80 dark:bg-brand-surface-dark/70 backdrop-blur-md rounded-xl shadow-lg p-8 animate-fade-in-up h-full overflow-y-auto">
     <h3 className="text-2xl font-bold text-brand-text-light dark:text-brand-text-dark mb-2">{hackathon.title}</h3>
     <p className="text-gray-600 dark:text-gray-300 mb-6">{hackathon.shortDescription}</p>
 
     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 text-center">
-      <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Призовой фонд</p>
-        <p className="text-xl font-bold text-brand-primary">{hackathon.prize}</p>
-      </div>
-      <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Длительность</p>
-        <p className="text-xl font-bold text-brand-primary">{hackathon.duration}</p>
-      </div>
-      <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Команды</p>
-        <p className="text-xl font-bold text-brand-primary">{hackathon.teamFormat}</p>
-      </div>
-      <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Взнос</p>
-        <p className="text-xl font-bold text-brand-primary">{hackathon.fee}</p>
-      </div>
+        <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Призовой фонд</p>
+            <p className="text-xl font-bold text-brand-primary">{hackathon.prize}</p>
+        </div>
+        <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Длительность</p>
+            <p className="text-xl font-bold text-brand-primary">{hackathon.duration}</p>
+        </div>
+        <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Команды</p>
+            <p className="text-xl font-bold text-brand-primary">{hackathon.teamFormat}</p>
+        </div>
+        <div className="bg-brand-background-light dark:bg-brand-background-dark p-4 rounded-lg shadow-inner">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Взнос</p>
+            <p className="text-xl font-bold text-brand-primary">{hackathon.fee}</p>
+        </div>
     </div>
 
     <div className="prose prose-lg dark:prose-invert max-w-none mb-8">
@@ -83,16 +84,53 @@ interface HackathonDetailPageProps {
 }
 
 const HackathonDetailPage: React.FC<HackathonDetailPageProps> = ({ hackathonId, onBack }) => {
-  // In a real app, you would fetch the hackathon data based on hackathonId
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [quotedText, setQuotedText] = useState<string | undefined>(undefined);
+  
   const hackathon = hackathonData; 
 
+  const handleTextSelection = () => {
+    const selection = window.getSelection()?.toString().trim();
+    if (selection) {
+      setQuotedText(selection);
+      if (!isChatOpen) {
+        setIsChatOpen(true);
+      }
+    }
+  };
+
+  const hackathonContextForAI = `Название: ${hackathon.title}\nОписание: ${hackathon.fullDescription}\nДаты: ${hackathon.dates.map(d => `${d.date}: ${d.event}`).join(', ')}`;
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-       <button onClick={onBack} className="flex items-center gap-2 mb-8 text-gray-500 dark:text-gray-400 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">
-        <BackIcon className="w-5 h-5" />
-        <span>Назад к хакатонам</span>
-      </button>
-      <HackathonDetailCard hackathon={hackathon} />
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28">
+      <div className="flex justify-between items-center mb-8">
+        <button onClick={onBack} className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">
+          <BackIcon className="w-5 h-5" />
+          <span>Назад к хакатонам</span>
+        </button>
+        <button 
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-md hover:bg-brand-primary-dark transition-colors shadow-lg"
+        >
+          <ChatIcon className="w-5 h-5" />
+          <span>{isChatOpen ? 'Закрыть чат' : 'Обсудить с Clearway AI'}</span>
+        </button>
+      </div>
+      
+      <div className={`grid gap-8 transition-all duration-500 ${isChatOpen ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'}`}>
+        <div className={`${isChatOpen ? 'lg:col-span-2' : ''}`}>
+            <HackathonDetailCard hackathon={hackathon} onMouseUp={handleTextSelection} />
+        </div>
+        {isChatOpen && (
+          <div className="lg:col-span-1 h-[75vh]">
+            <ChatWindow 
+              onClose={() => setIsChatOpen(false)} 
+              hackathonContext={hackathonContextForAI}
+              quotedText={quotedText}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

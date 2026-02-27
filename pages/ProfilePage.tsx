@@ -7,7 +7,7 @@ interface ProfilePageProps {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ username, onLogout }) => {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-28">
       <div className="max-w-2xl mx-auto bg-brand-surface-light/80 dark:bg-brand-surface-dark/70 backdrop-blur-md rounded-xl shadow-lg p-8">
         <div className="flex items-center space-x-6">
           <img 
