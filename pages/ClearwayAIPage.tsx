@@ -22,7 +22,6 @@ const ClearwayAIPage: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log('VITE_GEMINI_API_KEY:', import.meta.env.VITE_GEMINI_API_KEY);
     const user = localStorage.getItem('user');
     setCurrentUser(user);
     if (user) {
