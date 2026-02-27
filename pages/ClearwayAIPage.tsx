@@ -46,7 +46,7 @@ const ClearwayAIPage: React.FC = () => {
       `;
 
     chatRef.current = ai.chats.create({
-      model: "gemini-3.1-pro-preview",
+      model: "gemini-3-flash-preview",
       generationConfig: {
         maxOutputTokens: 1000,
       },
