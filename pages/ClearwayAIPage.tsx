@@ -12,10 +12,14 @@ const ClearwayAIPage: React.FC = () => {
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showOtherCellsModal, setShowOtherCellsModal] = useState(false);
-  const [isApiConfigured, setIsApiConfigured] = useState(true);
+  const [isApiConfigured, setIsApiConfigured] = useState(false);
   const chatRef = useRef<Chat | null>(null);
 
-  const ai = new GoogleGenAI({ apiKey: 'AIzaSyAaKf-s7WlmlUYbeLsJRYnzI63gWFaOEYo' });
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  let ai: GoogleGenAI | null = null;
+  if (apiKey) {
+    ai = new GoogleGenAI({ apiKey });
+  }
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -29,7 +33,9 @@ const ClearwayAIPage: React.FC = () => {
       setActiveChatId(1);
     }
     
-    // Initialize the chat session
+    if (ai) {
+      setIsApiConfigured(true);
+      // Initialize the chat session
     const hackathonInfo = `
         Информация о соревновании "Local Impact Hackathon 2026":
         Это образовательный стартап-хакатон для школьников, где участники разрабатывают технологические решения для реальных задач Казахстана.
@@ -48,6 +54,9 @@ const ClearwayAIPage: React.FC = () => {
         systemInstruction: `Ты Clearway AI, полезный ассистент. Тебе предоставлена следующая информация о хакатоне, используй ее для ответов на вопросы: ${hackathonInfo}`
       }
     });
+    } else {
+      setIsApiConfigured(false);
+    }
   }, []);
 
   const handleSendMessage = async () => {
@@ -112,6 +121,12 @@ const ClearwayAIPage: React.FC = () => {
 
       {/* Main Chat Area */}
       <div className="w-3/4 flex flex-col">
+        {!isApiConfigured && (
+          <div className="p-4 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 text-center">
+            <p className="font-semibold">Конфигурация API отсутствует</p>
+            <p className="text-sm">Пожалуйста, установите VITE_GEMINI_API_KEY в переменных окружения, чтобы включить чат.</p>
+          </div>
+        )}
         
         <div className="flex-grow p-6 overflow-y-auto">
           {messages.map((msg, index) => (
@@ -140,7 +155,8 @@ const ClearwayAIPage: React.FC = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Спросите что-нибудь о хакатоне..."
+              placeholder={isApiConfigured ? "Спросите что-нибудь о хакатоне..." : "API не настроен"}
+              disabled={!isApiConfigured}
               className="w-full pl-4 pr-12 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
             />
             <button onClick={handleSendMessage} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-brand-primary text-white hover:bg-brand-primary-dark transition-colors disabled:bg-gray-400" disabled={isLoading || !userInput.trim()}>
