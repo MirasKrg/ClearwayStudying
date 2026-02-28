@@ -8,6 +8,9 @@ import HackathonDetailPage from './pages/HackathonDetailPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import ClearwayAIPage from './pages/ClearwayAIPage';
+import DiaryPage from './pages/DiaryPage';
+import MyPages from './pages/MyPages';
+import CellDevelopmentPage from './pages/CellDevelopmentPage';
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -85,6 +88,15 @@ const App: React.FC = () => {
         return <ProfilePage username={currentUser} onLogout={handleLogout} />;
       case '/clearway-ai':
         return <ClearwayAIPage />;
+      case '/diary':
+        if (!currentUser) return <LoginPage onLogin={handleLogin} />;
+        return <DiaryPage navigate={navigate} />;
+      case '/my-pages':
+        if (!currentUser) return <LoginPage onLogin={handleLogin} />;
+        return <MyPages />;
+      case '/cell-development':
+        if (!currentUser) return <LoginPage onLogin={handleLogin} />;
+        return <CellDevelopmentPage />;
       case '/login':
         if (currentUser) {
           navigate('/profile');
@@ -110,7 +122,7 @@ const App: React.FC = () => {
       <main className="relative z-10 flex-grow pt-16"> 
         {renderPage()}
       </main>
-      {!['/cells', '/clearway-ai'].includes(currentPath) && <Footer />}
+      {!['/cells', '/clearway-ai', '/diary', '/my-pages', '/cell-development'].includes(currentPath) && <Footer />}
     </div>
   );
 };

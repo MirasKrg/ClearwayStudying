@@ -15,7 +15,7 @@ const ClearwayAIPage: React.FC = () => {
   const [isApiConfigured, setIsApiConfigured] = useState(false);
   const chatRef = useRef<Chat | null>(null);
 
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
   let ai: GoogleGenAI | null = null;
   if (apiKey) {
     ai = new GoogleGenAI({ apiKey });
@@ -47,10 +47,8 @@ const ClearwayAIPage: React.FC = () => {
 
     chatRef.current = ai.chats.create({
       model: "gemini-3-flash-preview",
-      generationConfig: {
-        maxOutputTokens: 1000,
-      },
       config: {
+        maxOutputTokens: 1000,
         systemInstruction: `Ты Clearway AI, полезный ассистент. Тебе предоставлена следующая информация о хакатоне, используй ее для ответов на вопросы: ${hackathonInfo}`
       }
     });

@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleTheme, navigate, curr
           <nav className="hidden md:flex md:items-center md:space-x-8">
             <a href="/cells" onClick={(e) => handleNavClick(e, '/cells')} className="text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">Клетки</a>
             <a href="/clearway-ai" onClick={(e) => handleNavClick(e, '/clearway-ai')} className="text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">Clearway AI</a>
-            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">Дневник</a>
+            <a href="/diary" onClick={(e) => handleNavClick(e, '/diary')} className="text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors">Дневник</a>
           </nav>
           <div className="flex items-center space-x-4">
             <label htmlFor="theme-toggle" className="relative inline-flex items-center cursor-pointer">
